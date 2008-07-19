@@ -1,6 +1,11 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
-module Purse
-  
-end
+require 'rubygems'
+require 'git'
+require 'crypt/blowfish'
+require 'yaml'
+
+require 'purse/settings'
+require 'purse/pocket'
+
