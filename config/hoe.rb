@@ -1,14 +1,16 @@
 require 'purse/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
-DESCRIPTION = "description of gem"
+AUTHOR = 'Aaron Quint'  # can also be an array of Authors
+EMAIL = "aaron@quirkey.com"
+DESCRIPTION = "A simple but secure password storage solution using git and crypt"
 GEM_NAME = 'purse' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'quirkey' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
-#  ['activesupport', '>= 1.3.1']
+ ['highline', '>= 1.4.0'],
+ ['git','>= 1.0.5'],
+ ['crypt','>= 1.1.4']
 ]    # An array of rubygem dependencies [name, version]
 
 @config_file = "~/.rubyforge/user-config.yml"
