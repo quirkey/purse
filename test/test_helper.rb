@@ -7,6 +7,8 @@ require File.dirname(__FILE__) + '/../lib/purse'
 
 class Test::Unit::TestCase
   
+  include Purse
+  
   def assert_all(collection)
     collection.each do |one|
       assert yield(one), "#{one} is not true"
