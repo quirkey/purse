@@ -12,15 +12,14 @@ module Purse
 
       def path=(new_path)
         raise MissingParameter unless new_path.is_a?(String)
-        FileUtils.mkdir_p(File.dirname(new_path))
         @path = new_path
+        @loaded = false
       end
 
       def load
+        save unless File.readable?(path)
         @settings = YAML.load_file(path)
         @loaded = true
-      rescue => e
-        raise MissingFile, "#{e}"
       end
 
       def loaded?
@@ -28,6 +27,7 @@ module Purse
       end
 
       def save
+        FileUtils.mkdir_p(File.dirname(path))
         File.open(path, 'w') {|f| f << YAML::dump(settings) }
       end
 
@@ -36,9 +36,9 @@ module Purse
         settings[key.to_s]
       end
 
-      def set(key, value)
+      def set(key, value, should_save = true)
         settings[key.to_s] = value
-        save
+        save if should_save
       end
 
       def settings
@@ -47,7 +47,10 @@ module Purse
       
       def settings=(new_settings)
         return unless new_settings.is_a?(Hash)
-        @settings = new_settings
+        new_settings.each do |k, v|
+          set(k, v, false)
+        end
+        save
       end
     end 
   end
