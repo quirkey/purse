@@ -6,6 +6,7 @@ require 'git'
 require 'crypt/blowfish'
 require 'yaml'
 
+require 'purse/error'
 require 'purse/settings'
 require 'purse/pocket'
-
+require 'purse/note'
