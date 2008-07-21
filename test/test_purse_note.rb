@@ -7,26 +7,27 @@ class TestPurseNote < Test::Unit::TestCase
 
       context "an instance" do        
         setup do
-          @note = Note.new(purse_path, 'sander', 'Nonsense', :method => :blowfish, :store_as => :yaml)
+          @path = purse_path
+          @note = Note.new(@path, 'sander', 'Nonsense', :method => :blowfish, :store_as => :yaml)
         end
 
         context "new" do
 
-          should_require "path" do
-            Note.new(nil,'sander','Sander nonsense')
+          should "require path" do
+            assert_raise(MissingParameter) do
+              Note.new(nil,'sander','Sander nonsense')
+            end
           end
 
-          should_require "name" do
-            Note.new(purse_path, '', 'Sander nonsense')
-          end
-
-          should_require "readable path" do
-            Note.new('RANDOM PATH', 'sander', 'Dadadad')
+          should "require name" do
+            assert_raise(MissingParameter) do
+              Note.new(purse_path, '', 'Sander nonsense')
+            end
           end
 
           context "initializing with regular data" do
             should "set @path" do
-              assert_equal purse_path, @note.path
+              assert_equal @path, @note.path
             end
 
             should "set @name" do
@@ -80,14 +81,16 @@ class TestPurseNote < Test::Unit::TestCase
 
         context "save" do
 
-          should_require "password" do
-            @note.save(nil)
+          should "require password" do
+            assert_raise(MissingParameter) do
+              @note.save(nil)
+            end
           end
 
           context "with password" do
             setup do
               @password = '12345' 
-              @note.expects(:encrypt).with(@password).returns('ENCRYPTED DATA')
+              Crypt::Blowfish.any_instance.expects(:encrypt_block).with(@note.data).returns('ENCRYPTED DATA')
               @note.save(@password)
             end
 
@@ -96,13 +99,13 @@ class TestPurseNote < Test::Unit::TestCase
             end
 
             should "write to file in path with #name" do
-              assert File.readable(@note.file_path)
+              assert File.readable?(@note.file_path)
               assert_equal @note.encrypted, File.read(@note.file_path)
             end
 
-            teardown do
-              File.unlink(purse_path, 'sander')
-            end
+            # teardown do
+            #   File.unlink(purse_path, 'sander')
+            # end
           end
         end
 
@@ -111,10 +114,13 @@ class TestPurseNote < Test::Unit::TestCase
           # plainBlock = "ABCD1234"
           # encryptedBlock = blowfish.encrypt_block(plainBlock)
           # decryptedBlock = blowfish.decrypt_block(encryptedBlock)
-          
-          should_require "password" do
-            @note.encrypt(nil)
+
+          should "require password" do
+            assert_raise(MissingParameter) do
+              @note.encrypt(nil)
+            end
           end
+          
           context "with password" do
             setup do
               @password = 'Test123'
@@ -129,14 +135,19 @@ class TestPurseNote < Test::Unit::TestCase
         end
 
         context "decrypt" do
-          should_require "password" do
-            @note.decrypt(nil)
+          setup do
+            @note = Note.new(purse_path, 'sander', 'ENCRYPTED DATA', :encrypted => true)
+          end
+
+          should "require password" do
+            assert_raise(MissingParameter) do
+              @note.decrypt(nil)
+            end
           end
 
           context "with password" do
             setup do
               @password = 'Test123'
-              @note = Note.new(purse_path, 'sander', 'ENCRYPTED DATA', :encrypted => true)
               Crypt::Blowfish.any_instance.expects(:decrypt_block).with(@note.encrypted).returns('Nonsense')
               @note.decrypt(@password)
             end
@@ -150,35 +161,39 @@ class TestPurseNote < Test::Unit::TestCase
 
       context "on the class" do
         context "load" do
-          
-          should_require "path" do
-            Note.load(nil, 'sander')
+
+          should "require path" do
+            assert_raise(MissingParameter) do
+              Note.load(nil, 'sander')
+            end
           end
 
-          should_require "name" do
-            Note.load(nil, 'sander')
+          should "name" do
+            assert_raise(MissingParameter) do
+              Note.load(nil, 'sander')
+            end
           end
 
           should "raise error if file can not be found" do
             assert_raise(MissingFile) do
-              Note.load(purse_path, 'file' + rand(5))
+              Note.load(purse_path, "file_#{rand(5)}")
             end
           end
 
-          context "with a saved encrypted not file" do
+          context "with a saved encrypted file" do
             setup do
               # Crypt::Blowfish.any_instance.expects(:decrypt_block).with('ENCRYPTED DATA').returns('Nonsense')
               @note = Note.load(purse_path, 'sander')
             end
-            
+
             should "return Note" do
               assert @note.is_a?(Note)
             end
-            
+
             should "set @encrypted" do
               assert_equal 'ENCRYPTED DATA', @note.encrypted
             end
-            
+
             should "not set @data" do
               assert_nil @note.data
             end

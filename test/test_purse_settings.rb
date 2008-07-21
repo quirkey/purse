@@ -29,9 +29,7 @@ class TestPurseSettings < Test::Unit::TestCase
       end
 
       context "path=" do
-        should_require 'path' do
-          Settings.path = 12345
-        end
+        
         context "with a path string" do
           setup do
             Settings.path = File.join(purse_path, 'settings.yml')

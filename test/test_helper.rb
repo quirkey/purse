@@ -6,13 +6,13 @@ require 'mocha'
 require File.dirname(__FILE__) + '/../lib/purse'
 
 class Test::Unit::TestCase
-  
+
   include Purse
-  
+
   def purse_path
     File.join(File.dirname(__FILE__), 'test_purse_data')
   end
-  
+
   def assert_all(collection)
     collection.each do |one|
       assert yield(one), "#{one} is not true"
@@ -40,15 +40,10 @@ class Test::Unit::TestCase
       i += 1
     end
   end
-  
+
   def assert_set_of(klass, set)
     assert set.respond_to?(:each), "#{set} is not a set (does not include Enumerable)"
     assert_all(set) {|a| a.is_a?(klass) }
   end
-  
-  def self.should_require(setting_name,&block) 
-    should "require parameter #{setting_name}" do
-      assert_raise(MissingParameter) { yield }
-    end
-  end
+
 end

@@ -5,9 +5,10 @@ class TestPursePocket < Test::Unit::TestCase
   context "Purse" do
     context "Pocket" do
       
-      should_eventually "create git repo" do
-        
+      should "be true" do
+        assert true
       end
+      should_eventually "create git repo"
       
     end
   end
