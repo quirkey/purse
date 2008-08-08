@@ -7,6 +7,10 @@ module Purse
       @path = File.expand_path(path)
     end
     
+    def init(root_path, pocket_name)
+      
+    end
+    
     def find(name)
       Purse.check_for_parameter('name', name)
       note = notes.find {|note| note.name == name }
