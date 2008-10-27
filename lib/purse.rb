@@ -4,6 +4,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 require 'rubygems'
 require 'git'
 require 'crypt/blowfish'
+require 'highline'
 require 'yaml'
 
 require 'purse/error'

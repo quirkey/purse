@@ -65,32 +65,11 @@ class TestPocket < Test::Unit::TestCase
         end
         
         context "edit" do
-          context "when the note exists" do
-            setup do
-              @note_name = 'new_note'
-              @note_data = 'Heres my data'
-              @pocket.edit(@note_name)
+          should "yield the note to the block" do
+            @pocket.edit('jagger') do |note|
+              assert note.is_a?(Note)
+              assert_equal @pocket.find('jagger'), note
             end
-            
-            teardown do
-              @pocket.find(@note_name).delete
-            end
-            
-            should "pass empty string to block" do
-              
-            end
-            
-            should "save note" do
-              
-            end
-            
-            should "create file" do
-              
-            end
-          end
-          
-          context "when the note does not exist" do
-            
           end
         end
 

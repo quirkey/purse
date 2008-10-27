@@ -9,7 +9,7 @@ module Purse
     
     def init
       FileUtils.mkdir_p(@path) unless File.readable?(@path)
-      @git = Git.init(@path)
+      git
     end
     
     def find(name)
@@ -20,6 +20,13 @@ module Purse
     
     def edit(name)
       Purse.check_for_parameter('name', name)
+      begin
+        note = find(name)
+      rescue Purse::MissingFile
+        note = Note.new(path, name, nil)
+      end
+      yield(note)
+      @notes = load_notes
     end
     
     def notes
@@ -39,6 +46,11 @@ module Purse
       notes.collect {|n| n.save(password) }
     end
     
+    def commit
+      git.add('.')
+      git.commit_all("Changes via Purse #{Time.now}")
+    end
+    
     def push
       
     end
@@ -47,5 +59,9 @@ module Purse
       
     end
     
+    protected
+    def git
+      @git ||= Git.init(@path)
+    end
   end
 end

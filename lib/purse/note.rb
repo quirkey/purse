@@ -1,7 +1,8 @@
 module Purse
   class Note
-    attr_reader :path, :name, :data, :encrypted, :options 
-
+    attr_reader :path, :name, :encrypted, :options 
+    attr_accessor :data
+    
     def initialize(path, name, data, options = {})
       Purse.check_for_parameter('path', path)
       Purse.check_for_parameter('name', name)
@@ -32,17 +33,17 @@ module Purse
     def encrypt(password)
       Purse.check_for_parameter('password', password)
       blowfish = Crypt::Blowfish.new(password)
-      @encrypted = blowfish.encrypt_block(@data)
+      @encrypted = blowfish.encrypt_string(@data)
     end
 
     def decrypt(password)
       Purse.check_for_parameter('password', password)
       blowfish = Crypt::Blowfish.new(password)
-      @data = blowfish.decrypt_block(@encrypted)
+      @data = blowfish.decrypt_string(@encrypted)
     end
     
     def encrypted?
-      @encrypted && !@data
+      @encrypted && (!@data || @data.blank?)
     end
     
     def delete

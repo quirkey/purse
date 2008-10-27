@@ -16,7 +16,7 @@ module Purse
         if pocket_name == 'settings' || pocket_name.nil?
           settings
         elsif action
-          send(action.gsub('--'), pocket_name, note_name)
+          send(action.gsub('--',''), pocket_name, note_name)
         else
           case note_name
           when 'push'
@@ -57,11 +57,11 @@ module Purse
         hr
         pocket = init(pocket_name)
         note = pocket.find(note_name)
-        
+        decrypt(note)
         display(note)
       rescue MissingFile
         say("could not find note: #{pocket_name}/#{note_name}")
-        if cli.agree("would you like to create it?")
+        if cli.agree("would you like to create it? (y/n)")
           edit(pocket_name, note_name)
         end
       end
@@ -70,16 +70,18 @@ module Purse
         h1("Note: #{note.name}",:green)
         hr
         say(note.data)
+        hr
       end
       
       def save(note)
-        
-      end
-      
-      def decrypt(note)
-        return unless note.encypted?
         password = cli.ask("Password: ") { |q| q.echo = false }
-        
+        note.save(password)
+      end
+
+      def decrypt(note)
+        return unless note.encrypted?
+        password = cli.ask("Password: ") { |q| q.echo = false }
+        note.decrypt(password)
       end
       
       def edit(pocket_name, note_name)
@@ -87,11 +89,24 @@ module Purse
         hr
         pocket = init(pocket_name)
         pocket.edit(note_name) do |note|
-          
+          decrypt(note)
+          tmp_path = empty_temp_path
+          File.open(tmp_path, 'w') {|f| f << note.data }
+          execute("#{editor} #{tmp_path}")
+          sleep(2)
+          data = ""
+          File.open(tmp_path, 'r') {|f| data << f.read }
+          note.data = data
+          hr
+          say("saving note #{pocket_name}/#{note_name}")
+          save(note)
         end
       end
       
       def push(pocket_name)
+        pocket = init(pocket_name)
+        say("Committing local changes for #{pocket_name}")
+        pocket.commit
       end
       
       def pull(pocket_name)
@@ -100,8 +115,10 @@ module Purse
       
       def list_notes(pocket_name)
         pocket = init(pocket_name)
-        say("Notes in #{pocket_name}")
-        cli.list(pocket.notes.collect {|n| n.name})
+        say("Notes in <%= color '(#{pocket_name})', :red %>")
+        pocket.notes.each do |note| 
+          say("- #{note.name}") 
+        end
       end
       
       protected
@@ -115,7 +132,7 @@ module Purse
       
       def banner
         hr
-        h1('Purse /', :white)
+        h1('/ Purse /', :white)
         hr
       end
       
@@ -133,6 +150,20 @@ module Purse
       
       def cli
         @cli ||= HighLine.new
+      end
+      
+      def execute(command)
+        `#{command}`
+      end
+      
+      def random_temp_name
+        "#{rand Time.now.to_i}-#{rand(1000)}--"
+      end
+      
+      def empty_temp_path
+        temp_dir = File.join(Settings.get(:root_path), 'tmp')
+        FileUtils.mkdir_p(temp_dir)
+        File.join(temp_dir, random_temp_name)
       end
     end
   end
