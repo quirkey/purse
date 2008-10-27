@@ -1,6 +1,6 @@
 require 'test_helper.rb'
 
-class TestPurseSettings < Test::Unit::TestCase
+class TestSettings < Test::Unit::TestCase
 
   context "Purse" do
     context "Settings" do

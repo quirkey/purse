@@ -7,14 +7,19 @@ module Purse
       @path = File.expand_path(path)
     end
     
-    def init(root_path, pocket_name)
-      
+    def init
+      FileUtils.mkdir_p(@path) unless File.readable?(@path)
+      @git = Git.init(@path)
     end
     
     def find(name)
       Purse.check_for_parameter('name', name)
       note = notes.find {|note| note.name == name }
       note ? note : raise(Purse::MissingFile, "Could note find the note named #{note}")
+    end
+    
+    def edit(name)
+      Purse.check_for_parameter('name', name)
     end
     
     def notes

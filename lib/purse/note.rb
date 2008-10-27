@@ -41,6 +41,14 @@ module Purse
       @data = blowfish.decrypt_block(@encrypted)
     end
     
+    def encrypted?
+      @encrypted && !@data
+    end
+    
+    def delete
+      File.unlink(file_path)
+    end
+    
     def file_path
       File.join(path, file_name)
     end

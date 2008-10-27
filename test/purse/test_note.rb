@@ -1,6 +1,6 @@
 require 'test_helper.rb'
 
-class TestPurseNote < Test::Unit::TestCase
+class TestNote < Test::Unit::TestCase
 
   context "Purse" do
     context "Note" do

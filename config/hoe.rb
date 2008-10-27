@@ -10,7 +10,8 @@ DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
  ['highline', '>= 1.4.0'],
  ['git','>= 1.0.5'],
- ['crypt','>= 1.1.4']
+ ['crypt','>= 1.1.4'],
+ ['termios', '>= 0.9.4']
 ]    # An array of rubygem dependencies [name, version]
 
 @config_file = "~/.rubyforge/user-config.yml"

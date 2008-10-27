@@ -10,7 +10,7 @@ class Test::Unit::TestCase
   include Purse
 
   def purse_path
-    File.join(File.dirname(__FILE__), 'test_purse_data')
+    File.expand_path(File.join(File.dirname(__FILE__), 'test_purse_data'))
   end
 
   def assert_all(collection)

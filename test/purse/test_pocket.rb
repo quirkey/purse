@@ -1,6 +1,6 @@
 require 'test_helper.rb'
 
-class TestPursePocket < Test::Unit::TestCase
+class TestPocket < Test::Unit::TestCase
 
   context "Purse" do
     context "Pocket" do
@@ -63,6 +63,36 @@ class TestPursePocket < Test::Unit::TestCase
             end
           end
         end
+        
+        context "edit" do
+          context "when the note exists" do
+            setup do
+              @note_name = 'new_note'
+              @note_data = 'Heres my data'
+              @pocket.edit(@note_name)
+            end
+            
+            teardown do
+              @pocket.find(@note_name).delete
+            end
+            
+            should "pass empty string to block" do
+              
+            end
+            
+            should "save note" do
+              
+            end
+            
+            should "create file" do
+              
+            end
+          end
+          
+          context "when the note does not exist" do
+            
+          end
+        end
 
         context "re_encrypt" do
           should "require a password" do
@@ -76,6 +106,50 @@ class TestPursePocket < Test::Unit::TestCase
               password = 'newpass'
               Note.any_instance.stubs(:save).times(3).with(password)
               @pocket.re_encrypt(password)
+            end
+          end
+
+        end
+
+        context "init" do
+          context "if the directory already exists" do
+            context "if the git directory already exists" do
+              should "not call Git init" do
+                Git.init(purse_path)
+                Git.expects(:init).once
+                @pocket.init
+                FileUtils.rm_rf(File.join(purse_path, '.git'))
+              end
+            end
+
+            context "if the git directory does not exist" do
+              should "initialize the git repo" do
+                Git.expects(:init).with(purse_path).once
+                @pocket.init
+                # assert File.readable?(File.join(purse_path, '.git/config'))
+                FileUtils.rm_rf(File.join(purse_path, '.git'))
+              end
+            end            
+          end
+
+          context "if the directory doesn't exist" do
+            setup do
+              @other_purse_path = File.expand_path(File.join('~', 'tmp', 'tmp_purse_path'))
+              @pocket = Pocket.new(@other_purse_path)
+              Git.expects(:init).with(@other_purse_path).once
+              @pocket.init
+            end
+            
+            teardown do
+              FileUtils.rm_rf(@other_purse_path)
+            end
+            
+            should "create the directory" do
+              assert File.readable?(@other_purse_path)
+            end
+
+            should "create the git directory" do
+              assert File.directory?(File.join(@other_purse_path, '.git'))
             end
           end
 
