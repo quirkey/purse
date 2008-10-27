@@ -107,10 +107,33 @@ module Purse
         pocket = init(pocket_name)
         say("Committing local changes for #{pocket_name}")
         pocket.commit
+        hr
+        set_remote(pocket_name)
+        say("Pulling changes from remote (#{pocket.remote})")
+        pocket.pull
+        hr
+        say("Pushing changes to remote (#{pocket.remote})")
+        pocket.push
       end
       
       def pull(pocket_name)
-        
+        pocket = init(pocket_name)
+        say("Committing local changes for #{pocket_name}")
+        pocket.commit
+        hr
+        set_remote(pocket_name)
+        say("Pulling changes from remote (#{pocket.remote})")
+        pocket.pull
+        hr
+      end
+      
+      def set_remote(pocket_name)
+        pocket = init(pocket_name)
+        unless pocket.remote
+          remote_url = cli.ask("please enter your remote git url (git@github ...)")
+          pocket.set_remote(remote_url)
+          say("set remote to #{remote_url}")
+        end
       end
       
       def list_notes(pocket_name)

@@ -48,15 +48,24 @@ module Purse
     
     def commit
       git.add('.')
+      return if git.status.changed.empty?
       git.commit_all("Changes via Purse #{Time.now}")
     end
     
+    def remote
+      git.remotes.first
+    end
+    
+    def set_remote(remote_url)
+      git.add_remote('origin', remote_url)
+    end
+    
     def push
-      
+      git.push('origin')
     end
     
     def pull
-      
+      git.pull('origin')
     end
     
     protected
