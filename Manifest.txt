@@ -12,6 +12,7 @@ lib/purse/note.rb
 lib/purse/pocket.rb
 lib/purse/settings.rb
 lib/purse/version.rb
+lib/purse/help.txt
 test/purse/test_cli.rb
 test/purse/test_note.rb
 test/purse/test_pocket.rb

@@ -13,10 +13,12 @@ module Purse
         note_name   = args.shift
         action      = args.shift
         banner
+        action = pocket_name if pocket_name =~ /^--/
+        action = action.gsub('--','')
         if pocket_name == 'settings' || pocket_name.nil?
           settings
         elsif action
-          send(action.gsub('--',''), pocket_name, note_name)
+          send(action, pocket_name, note_name)
         else
           case note_name
           when 'push'
@@ -31,7 +33,9 @@ module Purse
           end
         end
       rescue MissingFile
-        say("could not find note: #{pocket_name}/#{note_name}")
+        say("Could not find note: #{pocket_name}/#{note_name}")
+      rescue NoMethodError
+        say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands.")
       end
 
       protected
@@ -151,6 +155,13 @@ module Purse
         pocket.notes.each do |note| 
           say("- #{note.name}") 
         end
+      end
+      
+      def help(*args)
+        h1("Help", :yellow)
+        hr
+        help_text = File.open(File.join(File.dirname(__FILE__),'help.txt')) {|f| f.read }
+        say(help_text)
       end
       
       protected
