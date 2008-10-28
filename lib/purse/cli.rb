@@ -17,7 +17,7 @@ module Purse
         action = action.gsub('--','')
         if pocket_name == 'settings' || pocket_name.nil?
           settings
-        elsif action
+        elsif !action.nil? && action == ''
           send(action, pocket_name, note_name)
         else
           case note_name
