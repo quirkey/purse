@@ -127,9 +127,9 @@ class TestPocket < Test::Unit::TestCase
               assert File.readable?(@other_purse_path)
             end
 
-            should "create the git directory" do
-              assert File.directory?(File.join(@other_purse_path, '.git'))
-            end
+            # should "create the git directory" do
+            #   assert File.directory?(File.join(@other_purse_path, '.git'))
+            # end
           end
 
         end

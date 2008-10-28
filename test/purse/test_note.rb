@@ -90,7 +90,7 @@ class TestNote < Test::Unit::TestCase
           context "with password" do
             setup do
               @password = '12345' 
-              Crypt::Blowfish.any_instance.expects(:encrypt_block).with(@note.data).returns('ENCRYPTED DATA')
+              Crypt::Blowfish.any_instance.expects(:encrypt_string).with(@note.data).returns('ENCRYPTED DATA')
               @note.save(@password)
             end
 
@@ -124,7 +124,7 @@ class TestNote < Test::Unit::TestCase
           context "with password" do
             setup do
               @password = 'Test123'
-              Crypt::Blowfish.any_instance.expects(:encrypt_block).with(@note.data).returns('ENCRYPTED DATA')
+              Crypt::Blowfish.any_instance.expects(:encrypt_string).with(@note.data).returns('ENCRYPTED DATA')
               @note.encrypt(@password)
             end
 
@@ -148,7 +148,7 @@ class TestNote < Test::Unit::TestCase
           context "with password" do
             setup do
               @password = 'Test123'
-              Crypt::Blowfish.any_instance.expects(:decrypt_block).with(@note.encrypted).returns('Nonsense')
+              Crypt::Blowfish.any_instance.expects(:decrypt_string).with(@note.encrypted).returns('Nonsense')
               @note.decrypt(@password)
             end
 

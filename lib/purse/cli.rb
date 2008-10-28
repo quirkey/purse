@@ -57,7 +57,6 @@ module Purse
         hr
         pocket = init(pocket_name)
         note = pocket.find(note_name)
-        decrypt(note)
         display(note)
       rescue MissingFile
         say("could not find note: #{pocket_name}/#{note_name}")
@@ -67,14 +66,15 @@ module Purse
       end
       
       def display(note)
+        decrypt(note)
         h1("Note: #{note.name}",:green)
         hr
         say(note.data)
         hr
       end
       
-      def save(note)
-        password = cli.ask("Password: ") { |q| q.echo = false }
+      def save(note, password = nil)
+        password ||= cli.ask("Password: ") { |q| q.echo = false }
         note.save(password)
       end
 
@@ -82,6 +82,7 @@ module Purse
         return unless note.encrypted?
         password = cli.ask("Password: ") { |q| q.echo = false }
         note.decrypt(password)
+        password
       end
       
       def edit(pocket_name, note_name)
@@ -89,7 +90,7 @@ module Purse
         hr
         pocket = init(pocket_name)
         pocket.edit(note_name) do |note|
-          decrypt(note)
+          password = decrypt(note)
           tmp_path = empty_temp_path
           File.open(tmp_path, 'w') {|f| f << note.data }
           execute("#{editor} #{tmp_path}")
@@ -99,7 +100,7 @@ module Purse
           note.data = data
           hr
           say("saving note #{pocket_name}/#{note_name}")
-          save(note)
+          save(note, password)
         end
       end
       
@@ -112,7 +113,7 @@ module Purse
         say("Pulling changes from remote (#{pocket.remote})")
         pocket.pull
         hr
-        say("Pushing changes to remote (#{pocket.remote})")
+        sary("Pushing changes to remote (#{pocket.remote})")
         pocket.push
       end
       
