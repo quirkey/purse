@@ -29,7 +29,9 @@ module Purse
           else
             find(pocket_name, note_name)
           end
-        end 
+        end
+      rescue MissingFile
+        say("could not find note: #{pocket_name}/#{note_name}")
       end
 
       protected
@@ -102,6 +104,12 @@ module Purse
           say("saving note #{pocket_name}/#{note_name}")
           save(note, password)
         end
+      end
+      
+      def delete(pocket_name, note_name)
+        pocket = init(pocket_name)
+        note = pocket.find(note_name)
+        note.delete if cli.agree("are you sure you want to delete #{pocket_name}/#{note_name}? (y/n)")
       end
       
       def push(pocket_name)
