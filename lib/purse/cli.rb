@@ -152,6 +152,7 @@ module Purse
       def list_notes(pocket_name)
         pocket = init(pocket_name)
         say("Notes in <%= color '(#{pocket_name})', :red %>")
+        hr
         pocket.notes.each do |note| 
           say("- #{note.name}") 
         end
@@ -162,6 +163,16 @@ module Purse
         hr
         help_text = File.open(File.join(File.dirname(__FILE__),'help.txt')) {|f| f.read }
         say(help_text)
+      end
+      
+      def list(*args)
+        h1("Listing your Pockets", :red)
+        hr
+        Dir[File.join(Settings.get(:root_path), '*')].each do |file|
+          if File.directory?(file)
+            say("/#{File.basename(file)}/")
+          end
+        end
       end
       
       protected
