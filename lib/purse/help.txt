@@ -1,1 +1,54 @@
-Help is on the way
+-- General --
+
+Purse stores information in a two level folder system. 
+The basic piece of stored information is a 'note'. 
+A 'pocket' is a folder containing one to many notes. 
+A *pocket* can be synced between mutlple users/computers using a remote git repository.
+
+-- Commands --
+
+purse
+purse --list
+
+	List Pockets
+	
+purse --help
+
+	Display this message
+	
+purse --settings
+
+	Run the settings utility
+	
+purse pocketname
+
+	List the notes in pocket 'pocketname'
+
+purse pocketname --delete
+
+	Destroy the pocket: pocketname
+	
+purse pocketname --pull
+
+	Pull the pocket 'pocketname' from a remote git repository.
+	Will prompt for URL the first time its run.
+	
+purse pocketname --push
+
+	Push the pocket 'pocketname' to a remote git repository.
+	Will prompt for URL the first time its run.
+	
+purse pocketname notename
+
+	Display or create the note 'notename' in the pocket 'pocketname'.
+	Will prompt for password.
+	
+purse pocketname notename --edit
+
+	Edit or create the note 'notename' in the pocket 'pocketname'.
+	Will prompt for password.
+
+purse pocketname notename --delete
+
+	Delete the note 'notename' in the pocket 'pocketname'.
+	

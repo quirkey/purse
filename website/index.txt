@@ -10,9 +10,10 @@ h2. Installing
 
 h2. The basics
 
-Purse stores information in a two level folder system. The basic piece of stored information is a *'note'*. 
-A *'pocket'* is a folder containing one to many notes. A *pocket* can be synced between mutlple users/computers 
-using a remote git repository.
+Purse stores information in a two level folder system. 
+The basic piece of stored information is a *'note'*. 
+A *'pocket'* is a folder containing one to many notes.
+A *pocket* can be synced between mutlple users/computers using a remote git repository.
 
 h2. Demonstration of usage
 
