@@ -13,8 +13,8 @@ class TestCli < Test::Unit::TestCase
         
         # purse pursename #=> initialize or pull
         context "purse pursename" do
-          should "call init" do
-            Cli.expects(:list_notes).with(@pocketname).once
+          should "call list" do
+            Cli.expects(:list).with(@pocketname).once
             Cli.run([@pocketname])
           end
         end

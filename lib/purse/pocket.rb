@@ -12,6 +12,10 @@ module Purse
       git
     end
     
+    def delete
+      FileUtils.rm_rf(@path)
+    end
+    
     def find(name)
       Purse.check_for_parameter('name', name)
       note = notes.find {|note| note.name == name }

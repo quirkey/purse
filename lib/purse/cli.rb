@@ -1,6 +1,8 @@
 module Purse
   class Cli
 
+    ACTION_PREFIX = /^--/
+
     # purse pursename #=> initialize or pull
     # purse pursename notename #=> pocket.find(notename) if it doesnt exist first pull then ask if you want to create it
     # purse pursename notename --edit #=> open in EDITOR save and push
@@ -9,16 +11,15 @@ module Purse
     # purse settings/ purse # rerun settings 
     class << self
       def run(args)
-        pocket_name = args.shift
-        note_name   = args.shift
-        action      = args.shift
         banner
-        action = pocket_name if pocket_name =~ /^--/
-        action = action.gsub('--','')
-        if pocket_name == 'settings' || pocket_name.nil?
+        action = args.detect {|a| a =~ ACTION_PREFIX }
+        args.reject! {|a| a == action}
+        pocket_name, note_name = args[0], args[1]
+        if !action.nil? && action != ''
+          action = action.gsub(ACTION_PREFIX,'')
+          send(action, *([pocket_name, note_name].compact))
+        elsif pocket_name == 'settings' || pocket_name.nil?
           settings
-        elsif !action.nil? && action == ''
-          send(action, pocket_name, note_name)
         else
           case note_name
           when 'push'
@@ -27,14 +28,14 @@ module Purse
             pull(pocket_name)
           when '' 
           when nil
-            list_notes(pocket_name)
+            list(pocket_name)
           else
             find(pocket_name, note_name)
           end
         end
       rescue MissingFile
         say("Could not find note: #{pocket_name}/#{note_name}")
-      rescue NoMethodError
+      rescue NoMethodError => e
         say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands.")
       end
 
@@ -51,13 +52,13 @@ module Purse
         say("saving settings to : #{Settings.path}")
         Settings.settings = settings
       end
-              
+
       def init(pocket_name)
         pocket = Pocket.new(pocket_path(pocket_name))
         pocket.init
         pocket
       end
-      
+
       def find(pocket_name, note_name)
         say("loading note #{pocket_name}/#{note_name}")
         hr
@@ -70,7 +71,7 @@ module Purse
           edit(pocket_name, note_name)
         end
       end
-      
+
       def display(note)
         decrypt(note)
         h1("Note: #{note.name}",:green)
@@ -78,7 +79,7 @@ module Purse
         say(note.data)
         hr
       end
-      
+
       def save(note, password = nil)
         password ||= cli.ask("Password: ") { |q| q.echo = false }
         note.save(password)
@@ -90,7 +91,7 @@ module Purse
         note.decrypt(password)
         password
       end
-      
+
       def edit(pocket_name, note_name)
         say("loading note #{pocket_name}/#{note_name}")
         hr
@@ -109,13 +110,17 @@ module Purse
           save(note, password)
         end
       end
-      
-      def delete(pocket_name, note_name)
+
+      def delete(pocket_name, note_name = nil)
         pocket = init(pocket_name)
-        note = pocket.find(note_name)
-        note.delete if cli.agree("are you sure you want to delete #{pocket_name}/#{note_name}? (y/n)")
+        if note_name
+          note = pocket.find(note_name)
+          note.delete if cli.agree("are you sure you want to delete #{pocket_name}/#{note_name}? (y/n)")
+        else
+          pocket.delete if cli.agree("are you sure you want to delete /#{pocket_name}? (y/n)")
+        end
       end
-      
+
       def push(pocket_name)
         pocket = init(pocket_name)
         say("Committing local changes for #{pocket_name}")
@@ -128,7 +133,7 @@ module Purse
         sary("Pushing changes to remote (#{pocket.remote})")
         pocket.push
       end
-      
+
       def pull(pocket_name)
         pocket = init(pocket_name)
         say("Committing local changes for #{pocket_name}")
@@ -139,7 +144,7 @@ module Purse
         pocket.pull
         hr
       end
-      
+
       def set_remote(pocket_name)
         pocket = init(pocket_name)
         unless pocket.remote
@@ -148,48 +153,48 @@ module Purse
           say("set remote to #{remote_url}")
         end
       end
-      
-      def list_notes(pocket_name)
-        pocket = init(pocket_name)
-        say("Notes in <%= color '(#{pocket_name})', :red %>")
-        hr
-        pocket.notes.each do |note| 
-          say("- #{note.name}") 
-        end
-      end
-      
+
       def help(*args)
         h1("Help", :yellow)
         hr
         help_text = File.open(File.join(File.dirname(__FILE__),'help.txt')) {|f| f.read }
         say(help_text)
       end
-      
-      def list(*args)
-        h1("Listing your Pockets", :red)
-        hr
-        Dir[File.join(Settings.get(:root_path), '*')].each do |file|
-          if File.directory?(file)
-            say("/#{File.basename(file)}/")
+
+      def list(pocket_name = nil, note_name = nil)
+        unless pocket_name
+          h1("Listing your Pockets", :red)
+          hr
+          Dir[File.join(Settings.get(:root_path), '*')].each do |file|
+            if File.directory?(file)
+              say("/#{File.basename(file)}/")
+            end
+          end
+        else
+          pocket = init(pocket_name)
+          say("Notes in <%= color '(#{pocket_name})', :red %>")
+          hr
+          pocket.notes.each do |note| 
+            say("- #{note.name}") 
           end
         end
       end
-      
+
       protected
       def pocket_path(pocket_name)
         File.join(Settings.get(:root_path), pocket_name)
       end
-      
+
       def editor
         Settings.get(:editor)
       end
-      
+
       def banner
         hr
         h1('/ Purse /', :white)
         hr
       end
-      
+
       def h1(text, color = :red)
         say("<%= color('#{text}', :#{color}) %>")
       end 
@@ -197,23 +202,23 @@ module Purse
       def hr(color = :magenta)
         say("<%= color('-' * 40, :#{color}) %>")
       end
-      
+
       def say(message)
         cli.say(message)
       end
-      
+
       def cli
         @cli ||= HighLine.new
       end
-      
+
       def execute(command)
         `#{command}`
       end
-      
+
       def random_temp_name
         "#{rand Time.now.to_i}-#{rand(1000)}--"
       end
-      
+
       def empty_temp_path
         temp_dir = File.join(Settings.get(:root_path), 'tmp')
         FileUtils.mkdir_p(temp_dir)
