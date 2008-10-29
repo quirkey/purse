@@ -13,12 +13,3 @@ lib/purse/pocket.rb
 lib/purse/settings.rb
 lib/purse/version.rb
 lib/purse/help.txt
-test/purse/test_cli.rb
-test/purse/test_note.rb
-test/purse/test_pocket.rb
-test/purse/test_settings.rb
-test/test_helper.rb
-test/test_purse_data/blagger.note
-test/test_purse_data/jagger.note
-test/test_purse_data/sander.note
-test/test_purse_data/settings.yml

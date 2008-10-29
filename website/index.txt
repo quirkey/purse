@@ -1,10 +1,8 @@
 h1. purse
 
-h1. &#x2192; 'purse'
-
-
 h2. What
 
+A simple way of storing private/sensitive info and then sharing it with others using git
 
 h2. Installing
 
@@ -12,59 +10,50 @@ h2. Installing
 
 h2. The basics
 
+Purse stores information in a two level folder system. The basic piece of stored information is a *'note'*. 
+A *'pocket'* is a folder containing one to many notes. A *pocket* can be synced between mutlple users/computers 
+using a remote git repository.
 
 h2. Demonstration of usage
 
+To configure for the first time:
 
+<pre>purse</pre>
 
-h2. Forum
+and follow the handy on screen instructions.
 
-"http://groups.google.com/group/purse":http://groups.google.com/group/purse
+To create a new pocket/note.
 
-TODO - create Google Group - purse
+<pre>purse pocketname notename</pre>
+
+It will prompt you asking if you want to create the note.
+
+Once you've edited in your favorite editor and saved, purse will use Blowfish to encrypt the note with the password you provide. 
+
+Then you can display the note with:
+
+<pre>purse pocketname notename</pre>
+
+or edit with:
+
+<pre>purse pocketname notename --edit</pre>
+
+Each time it will ask you for the password you initially provided to encrypt it.
+
+For more commands/info run:
+
+<pre>purse --help</pre>
 
 h2. How to submit patches
 
 Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/ and for section "8b: Submit patch to Google Groups":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups, use the Google Group above.
 
-TODO - pick SVN or Git instructions
+You can fetch the latest source from:
 
-The trunk repository is <code>svn://rubyforge.org/var/svn/purse/trunk</code> for anonymous access.
+* github: "http://github.com/quirkey/purse/tree/master":http://github.com/GITHUB_USERNAME/purse/tree/master
 
-OOOORRRR
+<pre>git clone git://github.com/quirkey/purse.git</pre>
 
-You can fetch the source from either:
-
-<% if rubyforge_project_id %>
-
-* rubyforge: "http://rubyforge.org/scm/?group_id=<%= rubyforge_project_id %>":http://rubyforge.org/scm/?group_id=<%= rubyforge_project_id %>
-
-<pre>git clone git://rubyforge.org/purse.git</pre>
-
-<% else %>
-
-* rubyforge: MISSING IN ACTION
-
-TODO - You can not created a RubyForge project, OR have not run <code>rubyforge config</code>
-yet to refresh your local rubyforge data with this projects' id information.
-
-When you do this, this message will magically disappear!
-
-Or you can hack website/index.txt and make it all go away!!
-
-<% end %>
-
-* github: "http://github.com/GITHUB_USERNAME/purse/tree/master":http://github.com/GITHUB_USERNAME/purse/tree/master
-
-<pre>git clone git://github.com/GITHUB_USERNAME/purse.git</pre>
-
-
-TODO - add "github_username: username" to ~/.rubyforge/user-config.yml and newgem will reuse it for future projects.
-
-
-* gitorious: "git://gitorious.org/purse/mainline.git":git://gitorious.org/purse/mainline.git
-
-<pre>git clone git://gitorious.org/purse/mainline.git</pre>
 
 h3. Build and test instructions
 
@@ -79,5 +68,5 @@ This code is free to use under the terms of the MIT license.
 
 h2. Contact
 
-Comments are welcome. Send an email to "FIXME full name":mailto:FIXME email via the "forum":http://groups.google.com/group/purse
+Comments are welcome. Send an email to aaron at quirkey dot com or contact me through github.
 

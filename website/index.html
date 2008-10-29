@@ -37,35 +37,35 @@
     </div>
     <h1>&amp;#x2192; &#8216;purse&#8217;</h1>
 <h2>What</h2>
+<p>A simple way of storing private/sensitive info and then sharing it with others using git</p>
 <h2>Installing</h2>
 <p><pre class='syntax'><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">purse</span></pre></p>
 <h2>The basics</h2>
+<p>Purse stores information in a two level folder system. The basic piece of stored information is a <strong>&#8216;note&#8217;</strong>. <br />
+A <strong>&#8216;pocket&#8217;</strong> is a folder containing one to many notes. A <strong>pocket</strong> can be synced between mutlple users/computers <br />
+using a remote git repository.</p>
 <h2>Demonstration of usage</h2>
-<h2>Forum</h2>
-<p><a href="http://groups.google.com/group/purse">http://groups.google.com/group/purse</a></p>
-<p><span class="caps">TODO</span> &#8211; create Google Group &#8211; purse</p>
+<p>To configure for the first time:</p>
+<pre>purse</pre>
+<p>and follow the handy on screen instructions.</p>
+<p>To create a new pocket/note.</p>
+<pre>purse pocketname notename</pre>
+<p>It will prompt you asking if you want to create the note.</p>
+<p>Once you&#8217;ve edited in your favorite editor and saved, purse will use Blowfish to encrypt the note with the password you provide.</p>
+<p>Then you can display the note with:</p>
+<pre>purse pocketname notename</pre>
+<p>or edit with:</p>
+<pre>purse pocketname notename --edit</pre>
+<p>Each time it will ask you for the password you initially provided to encrypt it.</p>
+<p>For more commands/info run:</p>
+<pre>purse --help</pre>
 <h2>How to submit patches</h2>
 <p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a> and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups">8b: Submit patch to Google Groups</a>, use the Google Group above.</p>
-<p><span class="caps">TODO</span> &#8211; pick <span class="caps">SVN</span> or Git instructions</p>
-<p>The trunk repository is <code>svn://rubyforge.org/var/svn/purse/trunk</code> for anonymous access.</p>
-<p><span class="caps">OOOORRRR</span></p>
-<p>You can fetch the source from either:</p>
+<p>You can fetch the latest source from:</p>
 <ul>
-	<li>rubyforge: <span class="caps">MISSING</span> IN <span class="caps">ACTION</span></li>
+	<li>github: <a href="http://github.com/GITHUB_USERNAME/purse/tree/master">http://github.com/quirkey/purse/tree/master</a></li>
 </ul>
-<p><span class="caps">TODO</span> &#8211; You can not created a RubyForge project, OR have not run <code>rubyforge config</code><br />
-yet to refresh your local rubyforge data with this projects&#8217; id information.</p>
-<p>When you do this, this message will magically disappear!</p>
-<p>Or you can hack website/index.txt and make it all go away!!</p>
-<ul>
-	<li>github: <a href="http://github.com/GITHUB_USERNAME/purse/tree/master">http://github.com/GITHUB_USERNAME/purse/tree/master</a></li>
-</ul>
-<pre>git clone git://github.com/GITHUB_USERNAME/purse.git</pre>
-<p><span class="caps">TODO</span> &#8211; add &#8220;github_username: username&#8221; to ~/.rubyforge/user-config.yml and newgem will reuse it for future projects.</p>
-<ul>
-	<li>gitorious: <a href="git://gitorious.org/purse/mainline.git">git://gitorious.org/purse/mainline.git</a></li>
-</ul>
-<pre>git clone git://gitorious.org/purse/mainline.git</pre>
+<pre>git clone git://github.com/quirkey/purse.git</pre>
 <h3>Build and test instructions</h3>
 <pre>cd purse
 rake test
@@ -75,7 +75,7 @@ rake install_gem</pre>
 <h2>Contact</h2>
 <p>Comments are welcome. Send an email to <a href="mailto:FIXME"><span class="caps">FIXME</span> full name</a> email via the <a href="http://groups.google.com/group/purse">forum</a></p>
     <p class="coda">
-      <a href="FIXME email">FIXME full name</a>, 19th July 2008<br>
+      <a href="FIXME email">FIXME full name</a>, 28th October 2008<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
