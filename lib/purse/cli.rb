@@ -11,32 +11,34 @@ module Purse
     # purse settings/ purse # rerun settings 
     class << self
       def run(args)
-        banner
-        action = args.detect {|a| a =~ ACTION_PREFIX }
-        args.reject! {|a| a == action}
-        pocket_name, note_name = args[0], args[1]
-        if !action.nil? && action != ''
-          action = action.gsub(ACTION_PREFIX,'')
-          send(action, *([pocket_name, note_name].compact))
-        elsif pocket_name == 'settings' || pocket_name.nil?
-          settings
-        else
-          case note_name
-          when 'push'
-            push(pocket_name)
-          when 'pull'
-            pull(pocket_name)
-          when '' 
-          when nil
-            list(pocket_name)
+        begin
+          banner
+          settings_exist?
+          action = args.detect {|a| a =~ ACTION_PREFIX }
+          args.reject! {|a| a == action}
+          pocket_name, note_name = args[0], args[1]
+          if !action.nil? && action != ''
+            action = action.gsub(ACTION_PREFIX,'')
+            send(action, *([pocket_name, note_name].compact))
           else
-            find(pocket_name, note_name)
+            case note_name
+            when 'push'
+              push(pocket_name)
+            when 'pull'
+              pull(pocket_name)
+            when '' 
+            when nil
+              list(pocket_name)
+            else
+              find(pocket_name, note_name)
+            end
           end
+        rescue MissingFile
+          say("Could not find note: #{pocket_name}/#{note_name}")
+        rescue NoMethodError => e
+          say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands.")
         end
-      rescue MissingFile
-        say("Could not find note: #{pocket_name}/#{note_name}")
-      rescue NoMethodError => e
-        say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands.")
+        hr
       end
 
       protected
@@ -142,7 +144,6 @@ module Purse
         set_remote(pocket_name)
         say("Pulling changes from remote (#{pocket.remote})")
         pocket.pull
-        hr
       end
 
       def set_remote(pocket_name)
@@ -163,12 +164,13 @@ module Purse
 
       def list(pocket_name = nil, note_name = nil)
         unless pocket_name
-          h1("Listing your Pockets", :red)
+          h1("Listing your Pockets", :green)
           hr
-          Dir[File.join(Settings.get(:root_path), '*')].each do |file|
-            if File.directory?(file)
-              say("/#{File.basename(file)}/")
-            end
+          pockets = Dir[File.join(Settings.get(:root_path), '*')].find_all {|file| File.directory?(file) }
+          if pockets.empty?
+            say("no pockets yet. create one with 'purse pocketname'")
+          else
+            pockets.each {|p| say("/#{File.basename(p)}/") }
           end
         else
           pocket = init(pocket_name)
@@ -180,7 +182,14 @@ module Purse
         end
       end
 
-      protected
+      def settings_exist?
+        return if Settings.get(:root_path) && Settings.get(:editor)
+        h1("you must configure purse before you use it", :red)
+        settings
+        say("rerun this utility any time with purse --settings")
+        exit
+      end
+
       def pocket_path(pocket_name)
         File.join(Settings.get(:root_path), pocket_name)
       end
