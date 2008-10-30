@@ -59,7 +59,14 @@ module Purse
 
       def init(pocket_name)
         pocket = Pocket.new(pocket_path(pocket_name))
-        pocket.init
+        if !pocket.exists?
+          say("could not find pocket /#{pocket_name}")
+          if cli.agree("would you like to create it? (y/n)")
+            pocket.init
+          else
+            exit
+          end
+        end
         pocket
       end
 

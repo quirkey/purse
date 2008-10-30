@@ -8,8 +8,12 @@ module Purse
     end
     
     def init
-      FileUtils.mkdir_p(@path) unless File.readable?(@path)
+      FileUtils.mkdir_p(@path) unless exists?
       git
+    end
+    
+    def exists?
+      File.readable?(@path) && File.directory?(@path)
     end
     
     def delete
