@@ -35,8 +35,10 @@ module Purse
           end
         rescue MissingFile
           say("Could not find note: #{pocket_name}/#{note_name}")
+        rescue Git::GitExecuteError => e
+          say(e)
         rescue NoMethodError => e
-          say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands.")
+          say("Sorry, there is no action #{action}.\nTry purse --help for a list of commands. #{e}")
         end
         hr
       end
@@ -132,7 +134,7 @@ module Purse
         say("Pulling changes from remote (#{pocket.remote})")
         pocket.pull
         hr
-        sary("Pushing changes to remote (#{pocket.remote})")
+        say("Pushing changes to remote (#{pocket.remote})")
         pocket.push
       end
 

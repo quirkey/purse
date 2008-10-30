@@ -52,8 +52,10 @@ module Purse
     
     def commit
       git.add('.')
-      return if git.status.changed.empty?
+      # return if git.status.changed.empty?
       git.commit_all("Changes via Purse #{Time.now}")
+    rescue Git::GitExecuteError => e
+      puts e
     end
     
     def remote
